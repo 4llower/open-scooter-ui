@@ -1,12 +1,17 @@
 import 'dart:convert';
 
 import 'package:open_scooter_ui/feature/data/models/scooter_model.dart';
+import 'package:http/http.dart' as http;
 
 abstract class ScooterRemoteDataSource {
   Future<List<ScooterModel>> getAllScooters();
 }
 
 class ScooterRemoteDataSourceImpl implements ScooterRemoteDataSource {
+  final http.Client client;
+
+  ScooterRemoteDataSourceImpl({required this.client});
+
   @override
   Future<List<ScooterModel>> getAllScooters() async {
     var response = await new Future.delayed(

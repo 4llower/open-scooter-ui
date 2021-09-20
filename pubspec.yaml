@@ -31,6 +31,8 @@ dependencies:
   equatable: ^2.0.3
   flutter_bloc: ^7.2.0
   dartz: ^0.10.0
+  get_it: ^7.2.0
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:
