@@ -11,10 +11,11 @@ class ScooterModel extends ScooterEntity {
   factory ScooterModel.fromJson(Map<String, dynamic> json) {
     return ScooterModel(
         id: json['id'],
-        location:
-            json['location'] != null ? LocationModel.fromJson(json) : null,
+        location: json['location'] != null
+            ? LocationModel.fromJson(json['location'])
+            : null,
         chargeLevel: json['chargeLevel'],
-        cost: json['cost'] != null ? CostModel.fromJson(json) : null);
+        cost: json['cost'] != null ? CostModel.fromJson(json['cost']) : null);
   }
 
   Map<String, dynamic> toJson() {
