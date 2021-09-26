@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:open_scooter_ui/feature/data/datasources/scooter_remote_data_source.dart';
 import 'package:open_scooter_ui/feature/data/repos/scooter_repo_impl.dart';
 import 'package:open_scooter_ui/feature/domain/repos/scooter_repo.dart';
+import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_cubit.dart';
 
 import 'feature/domain/usecases/get_all_scooters.dart';
 import 'feature/presentation/bloc/scooter_cubit/scooter_cubit.dart';
@@ -15,6 +16,7 @@ Future<void> init() async {
   sl.registerFactory<ScooterCubit>(
     () => ScooterCubit(getAllScooters: sl()),
   );
+  sl.registerSingleton<ScannerCubit>(ScannerCubit());
   // UseCases
   sl.registerLazySingleton(() => GetAllScooters(sl()));
 
