@@ -7,11 +7,10 @@ import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
 
 abstract class UserRepo {
   Future<Either<Failure, OkStatus>> sendSMS(String phone);
-  Future<Either<Failure, List<UserEntity>>> auth(String smsCode);
-  Future<Either<Failure, List<UserEntity>>> addCreditCard(
+  Future<Either<Failure, UserEntity>> auth(String smsCode);
+  Future<Either<Failure, UserEntity>> addCreditCard(
       String cardNumber, String expirationDate, String cvc, String cardHolder);
-  Future<Either<Failure, List<UserEntity>>> removeCreditCard(
-      CreditCardEntity card);
-  Future<Either<Failure, List<UserEntity>>> topUp(
+  Future<Either<Failure, UserEntity>> removeCreditCard(CreditCardEntity card);
+  Future<Either<Failure, UserEntity>> topUp(
       CreditCardEntity card, BalanceEntity balance, int value);
 }
