@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_state.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/scooter_cubit/scooter_cubit.dart';
+import 'package:open_scooter_ui/feature/presentation/pages/auth_page.dart';
 import 'package:open_scooter_ui/feature/presentation/pages/map_page.dart';
 import 'locator_service.dart' as di;
 
@@ -31,7 +32,8 @@ class App extends StatelessWidget {
           backgroundColor: AppColors.mainBackground,
           scaffoldBackgroundColor: AppColors.mainBackground,
         ),
-        home: MapPage(),
+        initialRoute: '/',
+        routes: {'/': (context) => AuthPage(), '/map': (context) => MapPage()},
       ),
     );
   }
