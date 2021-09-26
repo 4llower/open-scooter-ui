@@ -5,11 +5,6 @@ import 'package:open_scooter_ui/feature/presentation/widgets/forms/enter_phone.d
 class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: EnterPhone(),
-      ),
-      appBar: AppBar(title: Center(child: Text("Open Scooter"))),
-    );
+    return Scaffold(body: EnterPhone());
   }
 }

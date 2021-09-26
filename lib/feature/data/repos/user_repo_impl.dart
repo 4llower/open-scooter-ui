@@ -8,9 +8,9 @@ import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
 import 'package:open_scooter_ui/feature/domain/repos/user_repo.dart';
 
 class UserRepoImpl implements UserRepo {
-  final UserRemoteDataSourceImpl userRemoteDataSource;
+  final UserRemoteDataSource userRemoteDataSource;
 
-  UserRepoImpl(this.userRemoteDataSource);
+  UserRepoImpl({required this.userRemoteDataSource});
 
   @override
   Future<Either<Failure, UserEntity>> addCreditCard(

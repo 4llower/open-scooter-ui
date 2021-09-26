@@ -10,6 +10,10 @@ class UserCubit extends Cubit<UserState> {
   UserCubit({required this.sendSMS, required this.enterAuthCode})
       : super(UserNotLogin());
 
+  void getTokenFromLocalStorage() async {
+    print('init');
+  }
+
   void sendSMSCode(String phone) async {
     if (state is UserLogin) return;
 

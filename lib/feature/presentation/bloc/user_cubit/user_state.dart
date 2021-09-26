@@ -13,6 +13,15 @@ class UserNotLogin extends UserState {
   List<Object> get props => [];
 }
 
+class UserPhoneInput extends UserState {
+  final String phone;
+
+  UserPhoneInput({required this.phone});
+
+  @override
+  List<Object> get props => [];
+}
+
 class UserSendSMS extends UserState {
   UserSendSMS();
 
