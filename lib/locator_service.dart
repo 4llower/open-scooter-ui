@@ -9,6 +9,7 @@ import 'package:open_scooter_ui/feature/domain/repos/scooter_repo.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/enter_auth_code.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/send_sms.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/user_cubit/user_cubit.dart';
+import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_cubit.dart';
 
 import 'feature/domain/repos/user_repo.dart';
 import 'feature/domain/usecases/get_all_scooters.dart';
@@ -23,7 +24,7 @@ Future<void> init() async {
   );
   sl.registerFactory<UserCubit>(
       () => UserCubit(sendSMS: sl(), enterAuthCode: sl()));
-
+  sl.registerSingleton<ScannerCubit>(ScannerCubit());
   // UseCases
   sl.registerLazySingleton(() => GetAllScooters(sl()));
   sl.registerLazySingleton(() => EnterAuthCode(sl()));

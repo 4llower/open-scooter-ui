@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/scooter_cubit/scooter_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/user_cubit/user_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/pages/auth_page.dart';
@@ -24,6 +25,9 @@ class App extends StatelessWidget {
             create: (context) => sl<ScooterCubit>()..loadScooters()),
         BlocProvider<UserCubit>(
             create: (context) => sl<UserCubit>()..getTokenFromLocalStorage()),
+        BlocProvider<ScannerCubit>(
+          create: (context) => sl<ScannerCubit>(),
+        )
       ],
       child: MaterialApp(
         theme: ThemeData.dark().copyWith(
