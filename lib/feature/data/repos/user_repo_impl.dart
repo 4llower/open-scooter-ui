@@ -1,19 +1,16 @@
 import 'package:dartz/dartz.dart';
 import 'package:open_scooter_ui/core/error/failure.dart';
 import 'package:open_scooter_ui/core/status/ok.dart';
-import 'package:open_scooter_ui/feature/data/datasources/scooter_remote_data_source.dart';
+import 'package:open_scooter_ui/feature/data/datasources/user_remote_data_source.dart';
 import 'package:open_scooter_ui/feature/domain/entities/credit_card_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/balance_entity.dart';
-import 'package:open_scooter_ui/feature/domain/entities/scooter_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
 import 'package:open_scooter_ui/feature/domain/repos/user_repo.dart';
 
 class UserRepoImpl implements UserRepo {
-  final ScooterRemoteDataSource scooterRemoteDataSource;
+  final UserRemoteDataSourceImpl userRemoteDataSource;
 
-  Future<Either<Failure, List<ScooterEntity>>> getAllScooters() async {
-    return Right(await scooterRemoteDataSource.getAllScooters());
-  }
+  UserRepoImpl(this.userRemoteDataSource);
 
   @override
   Future<Either<Failure, UserEntity>> addCreditCard(
