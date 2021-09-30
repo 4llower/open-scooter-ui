@@ -21,14 +21,9 @@ class ScooterRemoteDataSourceImpl implements ScooterRemoteDataSource {
 
     final scooters = json.decode(response)['body']['scooters'];
 
-    print(scooters);
-
     final result = (scooters as List).map((scooter) {
-      print(scooter);
       return ScooterModel.fromJson(scooter);
     }).toList();
-
-    print(result);
 
     return result;
   }
