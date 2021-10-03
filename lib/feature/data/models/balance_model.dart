@@ -10,7 +10,9 @@ class BalanceModel extends BalanceEntity {
     return BalanceModel(
         amount: json['amount'],
         unit: json['unit'],
-        cards: (json['cards'] as List).map((e) => CreditCardModel.fromJson(e)));
+        cards: (json['cards'] as List)
+            .map((e) => CreditCardModel.fromJson(e))
+            .toList());
   }
 
   Map<String, dynamic> toJson() {
