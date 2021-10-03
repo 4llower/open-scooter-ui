@@ -14,7 +14,7 @@ packages:
       name: bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.2.0"
+    version: "7.2.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -121,6 +121,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  intl_phone_number_input:
+    dependency: "direct main"
+    description:
+      name: intl_phone_number_input
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0+2"
   js:
     dependency: transitive
     description:
@@ -128,6 +135,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  libphonenumber:
+    dependency: transitive
+    description:
+      name: libphonenumber
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
+  libphonenumber_platform_interface:
+    dependency: transitive
+    description:
+      name: libphonenumber_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
+  libphonenumber_plugin:
+    dependency: transitive
+    description:
+      name: libphonenumber_plugin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.3"
+  libphonenumber_web:
+    dependency: transitive
+    description:
+      name: libphonenumber_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0+1"
   matcher:
     dependency: transitive
     description:
@@ -163,13 +198,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.11.1"
+  pin_input_text_field:
+    dependency: transitive
+    description:
+      name: pin_input_text_field
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.1"
+  plugin_platform_interface:
+    dependency: transitive
+    description:
+      name: plugin_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   provider:
     dependency: transitive
     description:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.0"
+    version: "6.0.1"
   qr_code_scanner:
     dependency: "direct main"
     description:
@@ -182,6 +231,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sms_autofill:
+    dependency: "direct main"
+    description:
+      name: sms_autofill
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.2"
   source_span:
     dependency: transitive
     description:
@@ -239,5 +295,5 @@ packages:
     source: hosted
     version: "2.1.0"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.16.0"
+  dart: ">=2.13.0 <3.0.0"
+  flutter: ">=2.0.0"

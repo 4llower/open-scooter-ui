@@ -22,8 +22,15 @@ class UserPhoneInput extends UserState {
   List<Object> get props => [];
 }
 
-class UserSendSMS extends UserState {
-  UserSendSMS();
+class UserSendingSMS extends UserState {
+  UserSendingSMS();
+
+  @override
+  List<Object> get props => [];
+}
+
+class UserSentSMS extends UserState {
+  UserSentSMS();
 
   @override
   List<Object> get props => [];
