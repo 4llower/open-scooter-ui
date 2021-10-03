@@ -32,7 +32,7 @@ class App extends StatelessWidget {
           create: (context) => sl<ScannerCubit>(),
         ),
         BlocProvider<BalanceCubit>(
-          create: (context) => sl<BalanceCubit>()..loadUser("228"),
+          create: (context) => sl<BalanceCubit>()..loadUser("token"),
         )
       ],
       child: MaterialApp(

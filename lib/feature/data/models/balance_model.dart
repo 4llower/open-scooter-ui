@@ -8,7 +8,7 @@ class BalanceModel extends BalanceEntity {
 
   factory BalanceModel.fromJson(Map<String, dynamic> json) {
     return BalanceModel(
-        amount: json['amount'],
+        amount: json['amount'].toDouble(),
         unit: json['unit'],
         cards: (json['cards'] as List)
             .map((e) => CreditCardModel.fromJson(e))

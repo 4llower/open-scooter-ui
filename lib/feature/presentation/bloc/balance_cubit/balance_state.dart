@@ -26,3 +26,8 @@ class BalanceLoaded extends BalanceState {
   @override
   List<Object> get props => [];
 }
+
+class BalanceTopUp extends BalanceState {
+  @override
+  List<Object> get props => [];
+}

@@ -1,4 +1,3 @@
-import 'package:dartz/dartz_unsafe.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +15,6 @@ class BalanceWidget extends StatelessWidget {
         if (state is BalanceEmpty) {
           return Text("No data");
         }
-
         if (state is BalanceLoaded) {
           var balance = state.user.balance.amount;
           var cards =
@@ -27,7 +25,7 @@ class BalanceWidget extends StatelessWidget {
                 flex: 1,
                 child: Center(
                     child: Padding(
-                  padding: EdgeInsets.only(left: 60, right: 60),
+                  padding: EdgeInsets.only(left: 40, right: 40),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -46,7 +44,7 @@ class BalanceWidget extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  Text("Balanse:"),
+                                  Text("Balance:"),
                                   SizedBox(
                                     width: 10,
                                   ),
@@ -54,11 +52,18 @@ class BalanceWidget extends StatelessWidget {
                                     "$balance",
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
-                                  )
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(state.user.balance.unit,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16))
                                 ],
                               ),
                               ElevatedButton(
-                                  onPressed: () => {},
+                                  onPressed: () => _topUpForm(context),
                                   child: Text(
                                     "Top up",
                                     style:
@@ -72,19 +77,6 @@ class BalanceWidget extends StatelessWidget {
               ),
               Expanded(
                   flex: 4,
-                  // child: ListView.builder(
-                  //   padding: const EdgeInsets.all(8),
-                  //   itemCount: state.user.balance.cards.length,
-                  //   itemBuilder: (BuildContext context, int index) {
-                  //     return Container(
-                  //       height: 50,
-                  //       margin: EdgeInsets.all(3),
-                  //       child: ListTile(
-
-                  //       )
-                  //     )
-                  //   }
-                  // ),
                   child: ListView(
                     padding: const EdgeInsets.all(8),
                     children: [
@@ -102,6 +94,31 @@ class BalanceWidget extends StatelessWidget {
             ],
           );
         }
+        if (state is BalanceLoading) {
+          return CircularProgressIndicator();
+        }
+        if (state is BalanceTopUp) {
+          return Container(
+              padding: EdgeInsets.all(30.0),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [Text("Enter the value")],
+                    ),
+                    TextField(
+                        onChanged: (value) =>
+                            _handleInputChange(context, value)),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                            onPressed: () => _topUpBalance(context),
+                            child: Text("Top up"))
+                      ],
+                    )
+                  ]));
+        }
+
         return Text("Balance error");
       },
     ));
@@ -116,5 +133,17 @@ class BalanceWidget extends StatelessWidget {
         onPressed: () => {},
       ),
     ));
+  }
+
+  void _handleInputChange(BuildContext context, String value) {
+    BlocProvider.of<BalanceCubit>(context)..inputChanged(value);
+  }
+
+  void _topUpForm(BuildContext context) {
+    BlocProvider.of<BalanceCubit>(context)..topUpForm();
+  }
+
+  void _topUpBalance(BuildContext context) {
+    BlocProvider.of<BalanceCubit>(context)..topUpBalance();
   }
 }

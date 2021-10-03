@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:open_scooter_ui/feature/presentation/pages/scan_page.dart';
 import 'package:open_scooter_ui/feature/presentation/widgets/map_widget.dart';
 
 class MapPage extends StatelessWidget {
@@ -22,7 +21,7 @@ class MapPage extends StatelessWidget {
                     heroTag: "balance",
                     child: const Icon(Icons.account_balance_wallet_outlined),
                     onPressed: () async =>
-                        {Navigator.pushNamed(context, '/balance')})),
+                        {Navigator.pushReplacementNamed(context, '/balance')})),
             Positioned(
                 bottom: 10,
                 right: 20,
@@ -35,7 +34,7 @@ class MapPage extends StatelessWidget {
   }
 
   void _navigateAndScanQR(BuildContext context) async {
-    final result = await Navigator.pushNamed(context, '/scan');
+    final result = await Navigator.pushReplacementNamed(context, '/scan');
     if (result == null) {
       return;
     }
