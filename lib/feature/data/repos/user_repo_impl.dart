@@ -20,9 +20,8 @@ class UserRepoImpl implements UserRepo {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> auth(String smsCode) {
-    // TODO: implement auth
-    throw UnimplementedError();
+  Future<Either<Failure, UserEntity>> auth(String smsCode) async {
+    return Right(await this.userRemoteDataSource.auth(smsCode));
   }
 
   @override
@@ -32,9 +31,8 @@ class UserRepoImpl implements UserRepo {
   }
 
   @override
-  Future<Either<Failure, OkStatus>> sendSMS(String phone) {
-    // TODO: implement sendSMS
-    throw UnimplementedError();
+  Future<Either<Failure, OkStatus>> sendSMS(String phone) async {
+    return Right(await this.userRemoteDataSource.sendSMS(phone));
   }
 
   @override
@@ -42,5 +40,10 @@ class UserRepoImpl implements UserRepo {
       CreditCardEntity card, BalanceEntity balance, int value) {
     // TODO: implement topUp
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> getUser(String phone) async {
+    return Right(await userRemoteDataSource.getUser(phone));
   }
 }

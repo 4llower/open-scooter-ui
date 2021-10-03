@@ -13,4 +13,5 @@ abstract class UserRepo {
   Future<Either<Failure, UserEntity>> removeCreditCard(CreditCardEntity card);
   Future<Either<Failure, UserEntity>> topUp(
       CreditCardEntity card, BalanceEntity balance, int value);
+  Future<Either<Failure, UserEntity>> getUser(String phone);
 }

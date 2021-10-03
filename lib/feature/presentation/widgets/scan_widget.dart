@@ -12,43 +12,58 @@ class ScanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     sl<ScannerCubit>()..reset();
-    return Center(child: BlocBuilder<ScannerCubit, ScannerState>(
-      builder: (context, state) {
-        if (state is ScannerInitial) {
-          return Column(
-            children: <Widget>[
-              Expanded(flex: 4, child: _buildQrView(context)),
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    CustomButton(
-                        heroTag: "flash",
-                        onTap: () async =>
-                            sl<ScannerCubit>()..toggleFlashLight(),
-                        buttonIcon: Icons.flash_on_outlined),
-                    CustomButton(
-                        heroTag: "flip",
-                        onTap: () async => sl<ScannerCubit>()..flipCamera(),
-                        buttonIcon: Icons.flip_camera_android_outlined),
-                  ],
-                ),
-              )
-            ],
-          );
-        }
-        if (state is ScannerScanned) {
-          _returnCode(context, state.scannedCode);
-          // return CircularProgressIndicator();
-        }
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return Center(child: BlocBuilder<ScannerCubit, ScannerState>(
+          builder: (context, state) {
+            if (state is ScannerInitial) {
+              var buttons = <Widget>[
+                CustomButton(
+                    heroTag: "flash",
+                    onTap: () async => sl<ScannerCubit>()..toggleFlashLight(),
+                    buttonIcon: Icons.flash_on_outlined),
+                CustomButton(
+                    heroTag: "flip",
+                    onTap: () async => sl<ScannerCubit>()..flipCamera(),
+                    buttonIcon: Icons.flip_camera_android_outlined),
+              ];
+              return orientation == Orientation.portrait
+                  ? Column(
+                      children: [
+                        Expanded(flex: 4, child: _buildQrView(context)),
+                        Expanded(
+                          flex: 1,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: buttons),
+                        )
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        Expanded(flex: 4, child: _buildQrView(context)),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: buttons),
+                        )
+                      ],
+                    );
+            }
+            if (state is ScannerScanned) {
+              _returnCode(context, state.scannedCode);
+              // return CircularProgressIndicator();
+            }
 
-        if (state is ScannerNoPermission) {
-          return Text("No persmissions");
-        }
-        return Text("Scanner error");
+            if (state is ScannerNoPermission) {
+              return Text("No persmissions");
+            }
+            return Text("Scanner error");
+          },
+        ));
       },
-    ));
+    );
   }
 
   Widget _buildQrView(BuildContext context) {
