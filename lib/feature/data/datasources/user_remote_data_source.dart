@@ -15,7 +15,6 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   UserRemoteDataSourceImpl({required this.client});
 
-
   Future<OkModel> sendSMS(String phone) {
     return Future.delayed(const Duration(seconds: 1), () => OkModel());
   }
@@ -25,6 +24,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       return UserModel.fromJson(jsonDecode(
           '{"phone":"228","token":"token","location":{"lat":59,"lng":69},"balance":{"amount":99,"unit":"USD","cards":[{"id":"88005553535","type":"urmum"}]}}'));
     });
+  }
 
   @override
   Future<UserModel> getUser(String phone) async {
