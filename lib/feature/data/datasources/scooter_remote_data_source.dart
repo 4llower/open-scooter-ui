@@ -15,7 +15,7 @@ class ScooterRemoteDataSourceImpl implements ScooterRemoteDataSource {
   @override
   Future<List<ScooterModel>> getAllScooters() async {
     const mock =
-        '{"body":{"scooters":[{"id":1,"chargeLevel":55,"location":{"lat":53,"lng":27},"cost":{"unlock":2,"minute":0.35}}]}}';
+        '{"body":{"scooters":[{"id":1,"chargeLevel":55,"location":{"lat":53,"lng":27},"cost":{"unlock":2.0,"minute":0.35}}]}}';
 
     var response = await Future.delayed(const Duration(seconds: 1), () => mock);
 
