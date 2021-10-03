@@ -5,6 +5,9 @@ import 'package:open_scooter_ui/feature/presentation/bloc/scooter_cubit/scooter_
 import 'package:open_scooter_ui/feature/presentation/bloc/user_cubit/user_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/pages/auth_page.dart';
 import 'package:open_scooter_ui/feature/presentation/pages/map_page.dart';
+import 'feature/presentation/bloc/balance_cubit/balance_cubit.dart';
+import 'feature/presentation/pages/balance_page.dart';
+import 'feature/presentation/pages/scan_page.dart';
 import 'locator_service.dart' as di;
 
 import 'common/app_colors.dart';
@@ -27,6 +30,9 @@ class App extends StatelessWidget {
             create: (context) => sl<UserCubit>()..getTokenFromLocalStorage()),
         BlocProvider<ScannerCubit>(
           create: (context) => sl<ScannerCubit>(),
+        ),
+        BlocProvider<BalanceCubit>(
+          create: (context) => sl<BalanceCubit>()..loadUser("228"),
         )
       ],
       child: MaterialApp(
@@ -34,8 +40,13 @@ class App extends StatelessWidget {
           backgroundColor: AppColors.mainBackground,
           scaffoldBackgroundColor: AppColors.mainBackground,
         ),
-        initialRoute: '/',
-        routes: {'/': (context) => AuthPage(), '/map': (context) => MapPage()},
+        initialRoute: '/map',
+        routes: {
+          '/': (context) => AuthPage(),
+          '/map': (context) => MapPage(),
+          '/scan': (context) => ScanPage(),
+          '/balance': (context) => BalancePage()
+        },
       ),
     );
   }

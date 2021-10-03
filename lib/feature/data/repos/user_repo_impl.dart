@@ -43,4 +43,9 @@ class UserRepoImpl implements UserRepo {
     // TODO: implement topUp
     throw UnimplementedError();
   }
+
+  @override
+  Future<Either<Failure, UserEntity>> getUser(String phone) async {
+    return Right(await userRemoteDataSource.getUser(phone));
+  }
 }

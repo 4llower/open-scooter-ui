@@ -8,11 +8,13 @@ import 'package:open_scooter_ui/feature/data/repos/user_repo_impl.dart';
 import 'package:open_scooter_ui/feature/domain/repos/scooter_repo.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/enter_auth_code.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/send_sms.dart';
+import 'package:open_scooter_ui/feature/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/user_cubit/user_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_cubit.dart';
 
 import 'feature/domain/repos/user_repo.dart';
 import 'feature/domain/usecases/get_all_scooters.dart';
+import 'feature/domain/usecases/get_user.dart';
 import 'feature/presentation/bloc/scooter_cubit/scooter_cubit.dart';
 
 final sl = GetIt.instance;
@@ -25,10 +27,12 @@ Future<void> init() async {
   sl.registerFactory<UserCubit>(
       () => UserCubit(sendSMS: sl(), enterAuthCode: sl()));
   sl.registerSingleton<ScannerCubit>(ScannerCubit());
+  sl.registerFactory<BalanceCubit>(() => BalanceCubit(getUser: sl()));
   // UseCases
   sl.registerLazySingleton(() => GetAllScooters(sl()));
   sl.registerLazySingleton(() => EnterAuthCode(sl()));
   sl.registerLazySingleton(() => SendSMS(sl()));
+  sl.registerLazySingleton(() => GetUser(sl()));
 
   // Repository
   sl.registerLazySingleton<ScooterRepo>(
