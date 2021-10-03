@@ -4,7 +4,7 @@ import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_
 import 'package:open_scooter_ui/feature/presentation/bloc/scooter_cubit/scooter_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/user_cubit/user_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/pages/auth_page.dart';
-import 'package:open_scooter_ui/feature/presentation/pages/map_page.dart';
+import 'package:open_scooter_ui/feature/presentation/pages/scan_page.dart';
 import 'locator_service.dart' as di;
 
 import 'common/app_colors.dart';
@@ -35,7 +35,10 @@ class App extends StatelessWidget {
           scaffoldBackgroundColor: AppColors.mainBackground,
         ),
         initialRoute: '/',
-        routes: {'/': (context) => AuthPage(), '/map': (context) => MapPage()},
+        routes: {
+          '/': (context) => AuthPage(),
+          '/scan': (context) => ScanPage()
+        },
       ),
     );
   }
