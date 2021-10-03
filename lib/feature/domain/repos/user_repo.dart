@@ -12,6 +12,6 @@ abstract class UserRepo {
       String cardNumber, String expirationDate, String cvc, String cardHolder);
   Future<Either<Failure, UserEntity>> removeCreditCard(CreditCardEntity card);
   Future<Either<Failure, UserEntity>> topUp(
-      CreditCardEntity card, BalanceEntity balance, int value);
-  Future<Either<Failure, UserEntity>> getUser(String phone);
+      CreditCardEntity card, BalanceEntity balance, double value);
+  Future<Either<Failure, UserEntity>> getUser(String token);
 }

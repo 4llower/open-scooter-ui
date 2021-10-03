@@ -11,14 +11,14 @@ class GetUser extends UseCase<UserEntity, GetUserParams> {
   GetUser(this._userRepo);
 
   Future<Either<Failure, UserEntity>> call(GetUserParams params) async {
-    return _userRepo.getUser(params.phone);
+    return _userRepo.getUser(params.token);
   }
 }
 
 class GetUserParams extends Equatable {
-  final String phone;
+  final String token;
   @override
   List<Object> get props => [];
 
-  GetUserParams({required this.phone});
+  GetUserParams({required this.token});
 }
