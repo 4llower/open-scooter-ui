@@ -27,7 +27,8 @@ class EnterSMSCode extends StatelessWidget {
                   codeLength: 4,
                   onCodeChanged: (code) {
                     if (code!.length == 4) {
-                      FocusScope.of(context).requestFocus(FocusNode());
+                      // FocusScope.of(context).requestFocus(FocusNode());
+                      _enterCode(context, code);
                     }
                   },
                 ))
