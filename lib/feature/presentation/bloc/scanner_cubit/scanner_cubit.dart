@@ -9,6 +9,9 @@ class ScannerCubit extends Cubit<ScannerState> {
   Function? toggleFlash;
   Function? internalFlipCamera;
   QRViewController? controller;
+  String? formInput;
+  final int idLength = 6;
+  bool inputValidated = false;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   ScannerCubit() : super((ScannerInitial()));
@@ -17,8 +20,35 @@ class ScannerCubit extends Cubit<ScannerState> {
     await this.controller?.toggleFlash();
   }
 
-  void flipCamera() async {
-    await this.controller?.flipCamera();
+  void showInputForm() async {
+    emit(ScannerInput());
+  }
+
+  String? inputChanged(String? value) {
+    inputValidated = false;
+    formInput = value;
+  }
+
+  String? scooterIdValidation(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter scooter ID";
+    }
+    if (int.tryParse(value) == null) {
+      return "Wrong scooter ID format";
+    }
+    if (value.length > idLength) {
+      return "Scooter number is too long";
+    }
+    if (value.length < idLength) {
+      return "Scooter number is too short";
+    }
+    inputValidated = true;
+    return null;
+  }
+
+  void submitInput() {
+    emit(ScannerScanned(scannedCode: inputValidated ? formInput : null));
+    // emit(ScannerNoPermission());
   }
 
   void onQRViewCreated(QRViewController controller) {
@@ -41,6 +71,7 @@ class ScannerCubit extends Cubit<ScannerState> {
   }
 
   void reset() {
+    formInput = "";
     emit(ScannerInitial());
   }
 }

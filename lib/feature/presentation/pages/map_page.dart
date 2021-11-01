@@ -21,7 +21,7 @@ class MapPage extends StatelessWidget {
                     heroTag: "balance",
                     child: const Icon(Icons.account_balance_wallet_outlined),
                     onPressed: () async =>
-                        {Navigator.pushReplacementNamed(context, '/balance')})),
+                        {Navigator.pushNamed(context, '/balance')})),
             Positioned(
                 bottom: 10,
                 right: 20,
@@ -34,7 +34,7 @@ class MapPage extends StatelessWidget {
   }
 
   void _navigateAndScanQR(BuildContext context) async {
-    final result = await Navigator.pushReplacementNamed(context, '/scan');
+    final result = await Navigator.pushNamed(context, '/scan');
     if (result == null) {
       return;
     }

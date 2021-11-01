@@ -10,7 +10,7 @@ class BalancePage extends StatelessWidget {
     return Scaffold(
         body: BalanceWidget(),
         appBar: AppBar(
-          title: Center(child: Text("User name or what?")),
+          title: Center(child: Text("Balance")),
         ));
   }
 }

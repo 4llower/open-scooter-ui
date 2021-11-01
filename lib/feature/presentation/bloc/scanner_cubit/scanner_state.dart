@@ -12,6 +12,11 @@ class ScannerInitial extends ScannerState {
   List<Object> get props => [];
 }
 
+class ScannerInput extends ScannerState {
+  @override
+  List<Object> get props => [];
+}
+
 class ScannerScanned extends ScannerState {
   final String? scannedCode;
   ScannerScanned({required this.scannedCode});

@@ -11,53 +11,45 @@ class ScanWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    sl<ScannerCubit>()..reset();
+    BlocProvider.of<ScannerCubit>(context).reset();
     return OrientationBuilder(
       builder: (context, orientation) {
         return Center(child: BlocBuilder<ScannerCubit, ScannerState>(
           builder: (context, state) {
-            if (state is ScannerInitial) {
-              var buttons = <Widget>[
-                CustomButton(
-                    heroTag: "flash",
-                    onTap: () async => sl<ScannerCubit>()..toggleFlashLight(),
-                    buttonIcon: Icons.flash_on_outlined),
-                CustomButton(
-                    heroTag: "flip",
-                    onTap: () async => sl<ScannerCubit>()..flipCamera(),
-                    buttonIcon: Icons.flip_camera_android_outlined),
-              ];
+            if (state is ScannerInitial || state is ScannerNoPermission) {
+              bool permission = state is ScannerInitial ? true : false;
               return orientation == Orientation.portrait
                   ? Column(
                       children: [
-                        Expanded(flex: 4, child: _buildQrView(context)),
                         Expanded(
-                          flex: 1,
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: buttons),
-                        )
+                            flex: 4,
+                            child: permission
+                                ? _buildQrView(context)
+                                : Text("No permission")),
+                        _buildPanel(context, orientation)
                       ],
                     )
                   : Row(
                       children: [
-                        Expanded(flex: 4, child: _buildQrView(context)),
                         Expanded(
-                          flex: 1,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: buttons),
-                        )
+                            flex: 4,
+                            child: permission
+                                ? _buildQrView(context)
+                                : Text("No permission")),
+                        _buildPanel(context, orientation),
                       ],
                     );
             }
-            if (state is ScannerScanned) {
-              _returnCode(context, state.scannedCode);
-              // return CircularProgressIndicator();
+            if (state is ScannerInput) {
+              return _buildInputForm(context);
             }
-
-            if (state is ScannerNoPermission) {
-              return Text("No persmissions");
+            if (state is ScannerScanned) {
+              _setCallBack(() {
+                _returnCode(context, state.scannedCode);
+                BlocProvider.of<ScannerCubit>(context).reset();
+              });
+              return CircularProgressIndicator();
+              // return CircularProgressIndicator();
             }
             return Text("Scanner error");
           },
@@ -86,9 +78,101 @@ class ScanWidget extends StatelessWidget {
     );
   }
 
-  void _returnCode(BuildContext context, String? code) async {
-    // Navigator.pop(context, code);
+  Widget _buildPanel(BuildContext context, Orientation orientation) {
+    var buttons = <Widget>[
+      CustomButton(
+          heroTag: "flash",
+          onTap: () async => sl<ScannerCubit>()..toggleFlashLight(),
+          buttonIcon: Icons.flash_on_outlined),
+      FloatingActionButton(
+          heroTag: "228",
+          backgroundColor: Colors.black,
+          child: const Icon(Icons.input_outlined, color: Colors.white),
+          onPressed: () async => _showInputForm(context)),
+    ];
+    return Expanded(
+      flex: 1,
+      child: orientation == Orientation.portrait
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttons)
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttons),
+    );
+  }
+
+  void _returnCode(BuildContext context, String? code) {
     Navigator.of(context)..pop(code);
+  }
+
+  void _showInputForm(BuildContext context) {
+    BlocProvider.of<ScannerCubit>(context)..showInputForm();
+  }
+
+  Widget _buildInputForm(BuildContext context) {
+    return Container(
+        child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: TextFormField(
+                            autofocus: true,
+                            validator: (value) =>
+                                _handleValidation(value, context),
+                            onChanged: (value) =>
+                                _handleFormChange(value, context),
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: "Enter scooter ID",
+                                labelText: "Scooter ID"))),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                              onPressed: () => _handleFormSubmit(context),
+                              child: Text("Submit")),
+                          SizedBox(
+                            width: 50,
+                          ),
+                          ElevatedButton(
+                              onPressed: () => _handleFormCancel(context),
+                              child: Text("Cancel"))
+                        ],
+                      ),
+                    )
+                  ],
+                ))));
+  }
+
+  String? _handleFormChange(String? value, BuildContext context) {
+    return BlocProvider.of<ScannerCubit>(context).inputChanged(value);
+  }
+
+  String? _handleValidation(String? value, BuildContext context) {
+    return BlocProvider.of<ScannerCubit>(context).scooterIdValidation(value);
+  }
+
+  void _handleFormCancel(BuildContext context) {
+    BlocProvider.of<ScannerCubit>(context).reset();
+  }
+
+  void _handleFormSubmit(BuildContext context) {
+    BlocProvider.of<ScannerCubit>(context).submitInput();
+  }
+
+  void _setCallBack(Function callBack) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      callBack();
+    });
   }
 }
 
