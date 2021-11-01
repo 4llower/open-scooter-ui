@@ -44,7 +44,10 @@ class ScanWidget extends StatelessWidget {
               return _buildInputForm(context);
             }
             if (state is ScannerScanned) {
-              _returnCode(context, state.scannedCode);
+              _setCallBack(() {
+                _returnCode(context, state.scannedCode);
+                BlocProvider.of<ScannerCubit>(context).reset();
+              });
               return CircularProgressIndicator();
               // return CircularProgressIndicator();
             }
@@ -99,8 +102,7 @@ class ScanWidget extends StatelessWidget {
     );
   }
 
-  void _returnCode(BuildContext context, String? code) async {
-    // Navigator.pop(context, code);
+  void _returnCode(BuildContext context, String? code) {
     Navigator.of(context)..pop(code);
   }
 
@@ -121,6 +123,7 @@ class ScanWidget extends StatelessWidget {
                     Padding(
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
+                            autofocus: true,
                             validator: (value) =>
                                 _handleValidation(value, context),
                             onChanged: (value) =>
@@ -164,6 +167,12 @@ class ScanWidget extends StatelessWidget {
 
   void _handleFormSubmit(BuildContext context) {
     BlocProvider.of<ScannerCubit>(context).submitInput();
+  }
+
+  void _setCallBack(Function callBack) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      callBack();
+    });
   }
 }
 

@@ -20,10 +20,6 @@ class ScannerCubit extends Cubit<ScannerState> {
     await this.controller?.toggleFlash();
   }
 
-  void flipCamera() async {
-    await this.controller?.flipCamera();
-  }
-
   void showInputForm() async {
     emit(ScannerInput());
   }
@@ -50,8 +46,9 @@ class ScannerCubit extends Cubit<ScannerState> {
     return null;
   }
 
-  void submitInput() async {
+  void submitInput() {
     emit(ScannerScanned(scannedCode: inputValidated ? formInput : null));
+    // emit(ScannerNoPermission());
   }
 
   void onQRViewCreated(QRViewController controller) {
