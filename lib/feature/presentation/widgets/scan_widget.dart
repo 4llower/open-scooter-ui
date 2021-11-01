@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_state.dart';
@@ -124,6 +126,10 @@ class ScanWidget extends StatelessWidget {
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
                             autofocus: true,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             validator: (value) =>
                                 _handleValidation(value, context),
                             onChanged: (value) =>
