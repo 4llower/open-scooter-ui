@@ -8,9 +8,10 @@ class BalancePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: BalanceWidget(),
-        appBar: AppBar(
-          title: Center(child: Text("Balance")),
-        ));
+      body: SingleChildScrollView(
+          child: ConstrainedBox(
+              constraints: BoxConstraints(), child: BalanceWidget())),
+      appBar: AppBar(),
+    );
   }
 }

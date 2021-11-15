@@ -1,31 +1,35 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_scooter_ui/feature/domain/entities/balance_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/credit_card_entity.dart';
-import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
-import 'package:open_scooter_ui/feature/domain/usecases/get_user.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/get_user_cached.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/top_up_balance.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/balance_cubit/balance_state.dart';
 
 class BalanceCubit extends Cubit<BalanceState> {
-  final GetUser getUser;
+  final GetUserCached getUser;
   final TopUpBalance topUp;
-  String valueInput = "";
-  double amount = 0;
+  bool toggleTopUp = false;
+  int selectedPrice = -1;
   List<CreditCardEntity> cards = [];
   BalanceCubit({required this.getUser, required this.topUp})
       : super(BalanceEmpty());
 
-  void loadUser(String token) async {
+  void loadUser() async {
     if (state is BalanceLoading) return;
 
     emit(BalanceLoading());
 
-    final failureOrUser = await getUser(GetUserParams(token: token));
+    final failureOrUser = await getUser(GetUserCachedParams());
 
     failureOrUser.fold(
-        (_) => throw UnimplementedError('[Failure] BalanceCubit getUser'),
-        (resp) =>
-            {cards = resp.balance.cards, emit(BalanceLoaded(user: resp))});
+        (_) => throw UnimplementedError(
+            '[Failure] BalanceCubit getUser from cache'),
+        (resp) => {
+              cards = resp.balance.cards,
+              toggleTopUp
+                  ? emit(BalanceTopUp(user: resp))
+                  : emit(BalanceLoaded(user: resp))
+            });
   }
 
   void topUpBalance() async {
@@ -34,7 +38,7 @@ class BalanceCubit extends Cubit<BalanceState> {
     emit(BalanceLoading());
 
     final failureOrUser = await topUp(TopUpParams(
-        amount: amount,
+        amount: 0,
         balance: BalanceEntity(amount: 0, cards: [], unit: "222"),
         card: cards[0]));
     failureOrUser.fold(
@@ -43,12 +47,7 @@ class BalanceCubit extends Cubit<BalanceState> {
   }
 
   void topUpForm() async {
-    emit(BalanceTopUp());
-  }
-
-  void inputChanged(String input) async {
-    valueInput = input;
-    double hello = double.parse(input);
-    amount = hello;
+    toggleTopUp = !toggleTopUp;
+    loadUser();
   }
 }

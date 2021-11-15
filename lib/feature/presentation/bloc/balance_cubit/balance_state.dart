@@ -27,7 +27,8 @@ class BalanceLoaded extends BalanceState {
   List<Object> get props => [];
 }
 
-class BalanceTopUp extends BalanceState {
+class BalanceTopUp extends BalanceLoaded {
+  BalanceTopUp({required user}) : super(user: user);
   @override
   List<Object> get props => [];
 }
