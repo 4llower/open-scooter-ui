@@ -8,7 +8,7 @@ import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
 import 'package:open_scooter_ui/feature/domain/repos/user_repo.dart';
 
 class TopUpBalance extends UseCase<UserEntity, TopUpParams> {
-  final UserRepo _userRepo;
+  final UserRemoteRepo _userRepo;
 
   TopUpBalance(this._userRepo);
 

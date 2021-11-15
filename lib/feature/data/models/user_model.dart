@@ -16,6 +16,18 @@ class UserModel extends UserEntity {
   }
 
   Map<String, dynamic> toJson() {
-    return {'phone': this.phone, 'location': this.location, 'balance': balance};
+    // TODO: when serializing models should have links to models, not entities
+    var locationModel =
+        LocationModel(lat: this.location.lat, lng: this.location.lng);
+    var balanceModel = BalanceModel(
+        amount: this.balance.amount,
+        unit: this.balance.unit,
+        cards: this.balance.cards);
+    return {
+      'phone': this.phone,
+      'token': this.token,
+      'location': locationModel.toJson(),
+      'balance': balanceModel.toJson()
+    };
   }
 }

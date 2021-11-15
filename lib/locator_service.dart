@@ -2,16 +2,19 @@ import 'package:get_it/get_it.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:open_scooter_ui/feature/data/datasources/scooter_remote_data_source.dart';
+import 'package:open_scooter_ui/feature/data/datasources/user_local_data_source.dart';
 import 'package:open_scooter_ui/feature/data/datasources/user_remote_data_source.dart';
 import 'package:open_scooter_ui/feature/data/repos/scooter_repo_impl.dart';
 import 'package:open_scooter_ui/feature/data/repos/user_repo_impl.dart';
 import 'package:open_scooter_ui/feature/domain/repos/scooter_repo.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/enter_auth_code.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/get_user_cached.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/send_sms.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/top_up_balance.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/user_cubit/user_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/scanner_cubit/scanner_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'feature/domain/repos/user_repo.dart';
 import 'feature/domain/usecases/get_all_scooters.dart';
@@ -26,7 +29,7 @@ Future<void> init() async {
     () => ScooterCubit(getAllScooters: sl()),
   );
   sl.registerFactory<UserCubit>(
-      () => UserCubit(sendSMS: sl(), enterAuthCode: sl()));
+      () => UserCubit(sendSMS: sl(), enterAuthCode: sl(), getUserCached: sl()));
   //TODO:replace singleton with factory for scanner
   sl.registerSingleton<ScannerCubit>(ScannerCubit());
   sl.registerFactory<BalanceCubit>(
@@ -37,13 +40,17 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SendSMS(sl()));
   sl.registerLazySingleton(() => GetUser(sl()));
   sl.registerLazySingleton(() => TopUpBalance(sl()));
+  sl.registerLazySingleton(() => GetUserCached(sl()));
 
   // Repository
   sl.registerLazySingleton<ScooterRepo>(
       () => ScooterRepoImpl(scooterRemoteDataSource: sl()));
-  sl.registerLazySingleton<UserRepo>(
-      () => UserRepoImpl(userRemoteDataSource: sl()));
+  sl.registerLazySingleton<UserRemoteRepo>(
+      () => UserRemoteRepoImpl(userRemoteDataSource: sl()));
+  sl.registerLazySingleton<UserLocalRepo>(
+      () => UserLocalRepoImpl(userLocalDataSource: sl()));
 
+  // Data source
   sl.registerLazySingleton<ScooterRemoteDataSource>(
     () => ScooterRemoteDataSourceImpl(
       client: sl(),
@@ -54,7 +61,11 @@ Future<void> init() async {
       client: sl(),
     ),
   );
+  sl.registerLazySingleton<UserLocalDataSource>(
+      () => UserLocalDataSourceImpl(futurePrefs: sl()));
 
   // External
   sl.registerLazySingleton(() => http.Client());
+  sl.registerLazySingleton<Future<SharedPreferences>>(
+      () => SharedPreferences.getInstance());
 }
