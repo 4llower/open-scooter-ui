@@ -1,15 +1,26 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:open_scooter_ui/feature/domain/usecases/enter_auth_code.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/get_user_cached.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/send_sms.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/user_cubit/user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
   final SendSMS sendSMS;
   final EnterAuthCode enterAuthCode;
+  final GetUserCached getUserCached;
+  UserCubit(
+      {required this.sendSMS,
+      required this.enterAuthCode,
+      required this.getUserCached})
+      : super(UserLoading());
 
-  UserCubit({required this.sendSMS, required this.enterAuthCode})
-      : super(UserNotLogin());
+  void tryLoadUser() async {
+    final failureOrUser = await getUserCached(GetUserCachedParams());
+
+    failureOrUser.fold(
+        (_) => emit(UserNotLogin()), (resp) => emit(UserLogin(user: resp)));
+  }
 
   void getTokenFromLocalStorage() async {
     print('init');

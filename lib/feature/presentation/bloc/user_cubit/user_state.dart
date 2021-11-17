@@ -36,6 +36,13 @@ class UserSentSMS extends UserState {
   List<Object> get props => [];
 }
 
+class UserLoading extends UserState {
+  UserLoading();
+
+  @override
+  List<Object> get props => [];
+}
+
 class UserLogin extends UserState {
   final UserEntity user;
 

@@ -6,7 +6,7 @@ import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
 import 'package:open_scooter_ui/feature/domain/repos/user_repo.dart';
 
 class EnterAuthCode extends UseCase<UserEntity, EnterAuthCodeParams> {
-  final UserRepo _userRepo;
+  final UserRemoteRepo _userRepo;
 
   EnterAuthCode(this._userRepo);
 

@@ -16,6 +16,11 @@ class BalanceModel extends BalanceEntity {
   }
 
   Map<String, dynamic> toJson() {
-    return {'amount': this.amount, 'unit': this.unit, 'cards': this.cards};
+    //TODO: balance model needs links to card models, not to entities to serialize
+    var cards = this
+        .cards
+        .map((c) => CreditCardModel(type: c.type, id: c.id).toJson())
+        .toList();
+    return {'amount': this.amount, 'unit': this.unit, 'cards': cards};
   }
 }

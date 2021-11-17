@@ -6,7 +6,7 @@ import 'package:open_scooter_ui/core/usecases/usecase.dart';
 import 'package:open_scooter_ui/feature/domain/repos/user_repo.dart';
 
 class SendSMS extends UseCase<OkStatus, SendSMSParams> {
-  final UserRepo _userRepo;
+  final UserRemoteRepo _userRepo;
 
   SendSMS(this._userRepo);
 

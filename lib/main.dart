@@ -26,13 +26,12 @@ class App extends StatelessWidget {
         BlocProvider<ScooterCubit>(
             create: (context) => sl<ScooterCubit>()..loadScooters()),
         BlocProvider<UserCubit>(
-            create: (context) => sl<UserCubit>()..getTokenFromLocalStorage()),
+            create: (context) => sl<UserCubit>()..tryLoadUser()),
         BlocProvider<ScannerCubit>(
           create: (context) => sl<ScannerCubit>(),
         ),
         BlocProvider<BalanceCubit>(
-          create: (context) => sl<BalanceCubit>()..loadUser("token"),
-        )
+            create: (context) => sl<BalanceCubit>()..loadUser()),
       ],
       child: MaterialApp(
         theme: ThemeData.dark().copyWith(

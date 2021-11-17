@@ -5,20 +5,17 @@ import 'package:open_scooter_ui/core/usecases/usecase.dart';
 import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
 import 'package:open_scooter_ui/feature/domain/repos/user_repo.dart';
 
-class GetUser extends UseCase<UserEntity, GetUserParams> {
-  final UserRemoteRepo _userRepo;
+class GetUserCached extends UseCase<UserEntity, GetUserCachedParams> {
+  final UserLocalRepo _userRepo;
 
-  GetUser(this._userRepo);
+  GetUserCached(this._userRepo);
 
-  Future<Either<Failure, UserEntity>> call(GetUserParams params) async {
-    return _userRepo.getUser(params.token);
+  Future<Either<Failure, UserEntity>> call(GetUserCachedParams params) async {
+    return _userRepo.getUserCached();
   }
 }
 
-class GetUserParams extends Equatable {
-  final String token;
+class GetUserCachedParams extends Equatable {
   @override
   List<Object> get props => [];
-
-  GetUserParams({required this.token});
 }

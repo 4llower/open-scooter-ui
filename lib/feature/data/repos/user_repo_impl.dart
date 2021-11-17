@@ -1,15 +1,19 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:open_scooter_ui/core/error/failure.dart';
 import 'package:open_scooter_ui/core/status/ok.dart';
+import 'package:open_scooter_ui/feature/data/datasources/user_local_data_source.dart';
 import 'package:open_scooter_ui/feature/data/datasources/user_remote_data_source.dart';
+import 'package:open_scooter_ui/feature/data/models/user_model.dart';
 import 'package:open_scooter_ui/feature/domain/entities/credit_card_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/balance_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/location_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
 import 'package:open_scooter_ui/feature/domain/repos/user_repo.dart';
 
-class UserRepoImpl implements UserRepo {
+class UserRemoteRepoImpl implements UserRemoteRepo {
   final UserRemoteDataSource userRemoteDataSource;
+  //TODO: get rid of mock user
   bool mockUserToggle = true;
   UserEntity mockUser = UserEntity(
       phone: "228",
@@ -23,7 +27,7 @@ class UserRepoImpl implements UserRepo {
           unit: "USD"),
       token: "token");
 
-  UserRepoImpl({required this.userRemoteDataSource});
+  UserRemoteRepoImpl({required this.userRemoteDataSource});
 
   @override
   Future<Either<Failure, UserEntity>> addCreditCard(
@@ -50,7 +54,9 @@ class UserRepoImpl implements UserRepo {
 
   @override
   Future<Either<Failure, UserEntity>> topUp(
-      CreditCardEntity card, BalanceEntity balance, double value) async {
+      UserEntity user, CreditCardEntity card, double value) async {
+    //TODO: delete waiting
+    await Future.delayed(const Duration(seconds: 2));
     // TODO: implement web view for top up
     mockUser = UserEntity(
         phone: mockUser.phone,
@@ -75,5 +81,45 @@ class UserRepoImpl implements UserRepo {
       mockUserToggle = false;
     }
     return Right(mockUser);
+  }
+}
+
+class UserLocalRepoImpl implements UserLocalRepo {
+  final UserLocalDataSource userLocalDataSource;
+
+  UserLocalRepoImpl({required this.userLocalDataSource});
+  //TODO: get rid of mock user
+  UserEntity mockUser = UserEntity(
+      phone: "228",
+      location: LocationEntity(lat: 34, lng: 26),
+      balance: BalanceEntity(
+          amount: 99,
+          cards: [
+            CreditCardEntity(type: "visa", id: "88005553535"),
+            CreditCardEntity(type: "master", id: "9900")
+          ],
+          unit: "USD"),
+      token: "token");
+
+  @override
+  Future<Either<Failure, UserEntity>> getUserCached() async {
+    // await saveUserInCache(mockUser);
+    var cachedUser = await userLocalDataSource.getUserFromCache();
+    var user = UserEntity(
+        phone: cachedUser.phone,
+        location: cachedUser.location,
+        balance: cachedUser.balance,
+        token: cachedUser.token);
+    return Right(user);
+  }
+
+  @override
+  Future<Either<Failure, void>> saveUserInCache(UserEntity user) async {
+    await userLocalDataSource.userToCache(UserModel(
+        phone: user.phone,
+        token: user.token,
+        location: user.location,
+        balance: user.balance));
+    return Right(0);
   }
 }
