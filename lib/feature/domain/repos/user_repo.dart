@@ -12,11 +12,11 @@ abstract class UserRemoteRepo {
       String cardNumber, String expirationDate, String cvc, String cardHolder);
   Future<Either<Failure, UserEntity>> removeCreditCard(CreditCardEntity card);
   Future<Either<Failure, UserEntity>> topUp(
-      CreditCardEntity card, BalanceEntity balance, double value);
+      UserEntity user, CreditCardEntity card, double value);
   Future<Either<Failure, UserEntity>> getUser(String token);
 }
 
 abstract class UserLocalRepo {
   Future<Either<Failure, UserEntity>> getUserCached();
-  Future<void> saveUserInCache(UserEntity user);
+  Future<Either<Failure, void>> saveUserInCache(UserEntity user);
 }

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:open_scooter_ui/core/error/failure.dart';
 import 'package:open_scooter_ui/core/status/ok.dart';
 import 'package:open_scooter_ui/feature/data/datasources/user_local_data_source.dart';
@@ -12,6 +13,7 @@ import 'package:open_scooter_ui/feature/domain/repos/user_repo.dart';
 
 class UserRemoteRepoImpl implements UserRemoteRepo {
   final UserRemoteDataSource userRemoteDataSource;
+  //TODO: get rid of mock user
   bool mockUserToggle = true;
   UserEntity mockUser = UserEntity(
       phone: "228",
@@ -52,7 +54,9 @@ class UserRemoteRepoImpl implements UserRemoteRepo {
 
   @override
   Future<Either<Failure, UserEntity>> topUp(
-      CreditCardEntity card, BalanceEntity balance, double value) async {
+      UserEntity user, CreditCardEntity card, double value) async {
+    //TODO: delete waiting
+    await Future.delayed(const Duration(seconds: 2));
     // TODO: implement web view for top up
     mockUser = UserEntity(
         phone: mockUser.phone,
@@ -84,6 +88,7 @@ class UserLocalRepoImpl implements UserLocalRepo {
   final UserLocalDataSource userLocalDataSource;
 
   UserLocalRepoImpl({required this.userLocalDataSource});
+  //TODO: get rid of mock user
   UserEntity mockUser = UserEntity(
       phone: "228",
       location: LocationEntity(lat: 34, lng: 26),
@@ -98,11 +103,7 @@ class UserLocalRepoImpl implements UserLocalRepo {
 
   @override
   Future<Either<Failure, UserEntity>> getUserCached() async {
-    await userLocalDataSource.userToCache(UserModel(
-        phone: mockUser.phone,
-        token: mockUser.token,
-        location: mockUser.location,
-        balance: mockUser.balance));
+    // await saveUserInCache(mockUser);
     var cachedUser = await userLocalDataSource.getUserFromCache();
     var user = UserEntity(
         phone: cachedUser.phone,
@@ -113,8 +114,12 @@ class UserLocalRepoImpl implements UserLocalRepo {
   }
 
   @override
-  Future<void> saveUserInCache(UserEntity user) {
-    // TODO: implement saveUserInCache
-    throw UnimplementedError();
+  Future<Either<Failure, void>> saveUserInCache(UserEntity user) async {
+    await userLocalDataSource.userToCache(UserModel(
+        phone: user.phone,
+        token: user.token,
+        location: user.location,
+        balance: user.balance));
+    return Right(0);
   }
 }

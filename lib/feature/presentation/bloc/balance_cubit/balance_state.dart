@@ -28,7 +28,18 @@ class BalanceLoaded extends BalanceState {
 }
 
 class BalanceTopUp extends BalanceLoaded {
-  BalanceTopUp({required user}) : super(user: user);
+  final int selectedPrice;
+  final int selectedMethod;
+  static List<int> paymentPrices = [5, 10, 20];
+  BalanceTopUp(
+      {required user,
+      required this.selectedPrice,
+      required this.selectedMethod})
+      : super(user: user);
+  List<int> getPaymentPrices() {
+    return BalanceTopUp.paymentPrices;
+  }
+
   @override
   List<Object> get props => [];
 }

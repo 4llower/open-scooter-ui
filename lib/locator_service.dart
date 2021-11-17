@@ -9,6 +9,7 @@ import 'package:open_scooter_ui/feature/data/repos/user_repo_impl.dart';
 import 'package:open_scooter_ui/feature/domain/repos/scooter_repo.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/enter_auth_code.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/get_user_cached.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/save_user_cached.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/send_sms.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/top_up_balance.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/balance_cubit/balance_cubit.dart';
@@ -33,7 +34,7 @@ Future<void> init() async {
   //TODO:replace singleton with factory for scanner
   sl.registerSingleton<ScannerCubit>(ScannerCubit());
   sl.registerFactory<BalanceCubit>(
-      () => BalanceCubit(getUser: sl(), topUp: sl()));
+      () => BalanceCubit(getUser: sl(), topUp: sl(), saveUserCached: sl()));
   // UseCases
   sl.registerLazySingleton(() => GetAllScooters(sl()));
   sl.registerLazySingleton(() => EnterAuthCode(sl()));
@@ -41,6 +42,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetUser(sl()));
   sl.registerLazySingleton(() => TopUpBalance(sl()));
   sl.registerLazySingleton(() => GetUserCached(sl()));
+  sl.registerLazySingleton(() => SaveUserCached(sl()));
 
   // Repository
   sl.registerLazySingleton<ScooterRepo>(

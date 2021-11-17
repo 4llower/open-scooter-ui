@@ -28,11 +28,11 @@ class BalanceWidget extends StatelessWidget {
                 child: Padding(
                     padding: EdgeInsets.all(5),
                     child: Row(
-                      children: [
-                        _buildPriceCard(5, state.user.balance.unit),
-                        _buildPriceCard(10, state.user.balance.unit),
-                        _buildPriceCard(15, state.user.balance.unit)
-                      ],
+                      children: _buildPriceCards(
+                          context,
+                          state.getPaymentPrices(),
+                          state.user.balance.unit,
+                          state.selectedPrice),
                     ))));
             elements.add(Container(
                 margin: EdgeInsets.all(8),
@@ -44,9 +44,8 @@ class BalanceWidget extends StatelessWidget {
             elements.add(Container(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: state.user.balance.cards
-                    .map((c) => _buildPayMethod(c))
-                    .toList(),
+                children: _buildPayMethods(
+                    context, state.user.balance.cards, state.selectedMethod),
               ),
             ));
             elements.add(Container(
@@ -59,7 +58,7 @@ class BalanceWidget extends StatelessWidget {
                             maxWidth: 350),
                         child: ElevatedButton(
                           child: Text("Pay"),
-                          onPressed: () => {},
+                          onPressed: () => _doPayment(context),
                         )))));
           }
           return Column(
@@ -158,8 +157,7 @@ class BalanceWidget extends StatelessWidget {
                       child: Card(
                           child: Padding(
                               padding: EdgeInsets.all(8),
-                              child: Expanded(
-                                  child: Column(
+                              child: Column(
                                 children: [
                                   Container(
                                       margin: EdgeInsets.all(8),
@@ -208,12 +206,12 @@ class BalanceWidget extends StatelessWidget {
                                         ],
                                       ))
                                 ],
-                              ))))))
+                              )))))
             ],
           );
         }
         if (state is BalanceLoading) {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
 
         return Text("Balance error");
@@ -232,40 +230,65 @@ class BalanceWidget extends StatelessWidget {
     ));
   }
 
-  Widget _buildPayMethod(CreditCardEntity card) {
-    return Card(
+  List<Widget> _buildPayMethods(
+      BuildContext context, List<CreditCardEntity> cards, int selected) {
+    List<Widget> methods = [];
+    for (int i = 0; i < cards.length; i++) {
+      methods.add(Card(
+        color: i == selected
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.background,
         clipBehavior: Clip.antiAlias,
-        child: Padding(
-            padding: EdgeInsets.all(8),
-            child: InkWell(
-                child: Row(
-                  children: [Icon(Icons.credit_card), Text(card.type)],
-                ),
-                onTap: () => {})));
+        child: ListTile(
+          leading: Icon(Icons.credit_card),
+          title: Text(cards[i].type),
+          onTap: () => _handleMethodSelection(context, i),
+        ),
+      ));
+    }
+    return methods;
   }
 
-  Widget _buildPriceCard(int price, String unit) {
-    return Expanded(
-        child: Card(
-            clipBehavior: Clip.antiAlias,
-            child: Container(
-                child: InkWell(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("$price",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
-                  Text("$unit")
-                ],
-              ),
-              onTap: () => {},
-            ))));
+  List<Widget> _buildPriceCards(
+      BuildContext context, List<int> prices, String unit, int selected) {
+    List<Widget> cards = [];
+    for (int i = 0; i < prices.length; i++) {
+      cards.add(Expanded(
+          child: Card(
+              color: i == selected
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.background,
+              clipBehavior: Clip.antiAlias,
+              child: Container(
+                  child: InkWell(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(prices[i].toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 22)),
+                    Text("$unit")
+                  ],
+                ),
+                onTap: () => _handlePriceSelection(context, i),
+              )))));
+    }
+    return cards;
   }
 
   void _toogleTopUp(BuildContext context) {
     BlocProvider.of<BalanceCubit>(context)..topUpForm();
   }
 
-  void _onPriceSelect(int ind) {}
+  void _handlePriceSelection(BuildContext context, int selection) {
+    BlocProvider.of<BalanceCubit>(context)..selectPrice(selection);
+  }
+
+  void _handleMethodSelection(BuildContext context, int selection) {
+    BlocProvider.of<BalanceCubit>(context)..selectMethod(selection);
+  }
+
+  void _doPayment(BuildContext context) {
+    BlocProvider.of<BalanceCubit>(context)..execPayment();
+  }
 }
