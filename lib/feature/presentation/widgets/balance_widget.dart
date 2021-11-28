@@ -213,7 +213,7 @@ class BalanceWidget extends StatelessWidget {
           );
         }
         if (state is BalanceLoading) {
-          return Container(child: Center(child: CircularProgressIndicator()));
+          return Center(child: CircularProgressIndicator());
         }
 
         return Text("Balance error");

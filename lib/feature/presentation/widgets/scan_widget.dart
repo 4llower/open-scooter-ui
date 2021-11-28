@@ -50,7 +50,7 @@ class ScanWidget extends StatelessWidget {
                 _returnCode(context, state.scannedCode);
                 BlocProvider.of<ScannerCubit>(context).reset();
               });
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
               // return CircularProgressIndicator();
             }
             return Text("Scanner error");

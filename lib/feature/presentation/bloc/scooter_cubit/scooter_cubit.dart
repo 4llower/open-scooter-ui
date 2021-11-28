@@ -50,8 +50,7 @@ class ScooterCubit extends Cubit<ScooterState> {
       this.controller?.animateCamera(
             CameraUpdate.newCameraPosition(
               CameraPosition(
-                  // target: LatLng(l.latitude as double, l.longitude as double),
-                  target: LatLng(53.893009, 27.567444),
+                  target: LatLng(l.latitude as double, l.longitude as double),
                   zoom: 20),
             ),
           );
