@@ -103,7 +103,7 @@ class UserLocalRepoImpl implements UserLocalRepo {
 
   @override
   Future<Either<Failure, UserEntity>> getUserCached() async {
-    // await saveUserInCache(mockUser);
+    await saveUserInCache(mockUser);
     var cachedUser = await userLocalDataSource.getUserFromCache();
     var user = UserEntity(
         phone: cachedUser.phone,

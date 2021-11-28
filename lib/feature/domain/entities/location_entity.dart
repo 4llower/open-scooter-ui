@@ -1,6 +1,6 @@
 class LocationEntity {
-  final int lat;
-  final int lng;
+  final double lat;
+  final double lng;
 
   LocationEntity({required this.lat, required this.lng});
 }
