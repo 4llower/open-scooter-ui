@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:open_scooter_ui/core/error/failure.dart';
 import 'package:open_scooter_ui/core/status/ok.dart';
-import 'package:open_scooter_ui/feature/domain/entities/balance_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/credit_card_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
 

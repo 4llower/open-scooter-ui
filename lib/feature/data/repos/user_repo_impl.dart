@@ -30,10 +30,14 @@ class UserRemoteRepoImpl implements UserRemoteRepo {
   UserRemoteRepoImpl({required this.userRemoteDataSource});
 
   @override
-  Future<Either<Failure, UserEntity>> addCreditCard(
-      String cardNumber, String expirationDate, String cvc, String cardHolder) {
-    // TODO: implement addCreditCard
-    throw UnimplementedError();
+  Future<Either<Failure, UserEntity>> addCreditCard(String cardNumber,
+      String expirationDate, String cvc, String cardHolder) async {
+    var cardNum = mockUser.balance.cards.length;
+    mockUser.balance.cards.add(
+        CreditCardEntity(type: "nice card #${cardNum + 1}", id: cardNumber));
+    //TODO: delete waiting
+    await Future.delayed(const Duration(seconds: 1));
+    return Right(mockUser);
   }
 
   @override
@@ -42,9 +46,10 @@ class UserRemoteRepoImpl implements UserRemoteRepo {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> removeCreditCard(CreditCardEntity card) {
-    // TODO: implement removeCreditCard
-    throw UnimplementedError();
+  Future<Either<Failure, UserEntity>> removeCreditCard(
+      CreditCardEntity card) async {
+    mockUser.balance.cards.remove(card);
+    return Right(mockUser);
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_scooter_ui/feature/domain/entities/credit_card_entity.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/balance_cubit/balance_cubit.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/balance_cubit/balance_state.dart';
+import 'package:open_scooter_ui/feature/presentation/widgets/forms/enter_card.dart';
 
 class BalanceWidget extends StatelessWidget {
   const BalanceWidget({Key? key}) : super(key: key);
@@ -20,8 +21,7 @@ class BalanceWidget extends StatelessWidget {
           var balance = balanceAmount.length > 6
               ? balanceAmount.substring(0, 5)
               : balanceAmount;
-          var cards =
-              state.user.balance.cards.map((card) => _buildCard(card)).toList();
+          var cards = _buildCards(context, state.user.balance.cards);
           var elements = <Widget>[];
           if (state is BalanceTopUp) {
             elements.add(Center(
@@ -145,7 +145,7 @@ class BalanceWidget extends StatelessWidget {
                             title: Text("Add new card"),
                             trailing: ElevatedButton(
                               child: Icon(Icons.control_point_outlined),
-                              onPressed: () => {},
+                              onPressed: () => _addCard(context),
                             ),
                           )),
                           ...cards
@@ -219,15 +219,20 @@ class BalanceWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(CreditCardEntity card) {
-    return Card(
-        child: ListTile(
-      title: Text(card.type),
-      trailing: ElevatedButton(
-        child: Icon(Icons.delete_outline),
-        onPressed: () => {},
-      ),
-    ));
+  List<Widget> _buildCards(
+      BuildContext context, List<CreditCardEntity> userCards) {
+    List<Widget> cards = [];
+    for (int i = 0; i < userCards.length; i++) {
+      cards.add(Card(
+          child: ListTile(
+        title: Text(userCards[i].type),
+        trailing: ElevatedButton(
+          child: Icon(Icons.delete_outline),
+          onPressed: () => _handleCreditCardRemoving(context, i),
+        ),
+      )));
+    }
+    return cards;
   }
 
   List<Widget> _buildPayMethods(
@@ -288,7 +293,17 @@ class BalanceWidget extends StatelessWidget {
     BlocProvider.of<BalanceCubit>(context)..selectMethod(selection);
   }
 
+  void _handleCreditCardRemoving(BuildContext context, int selection) {
+    BlocProvider.of<BalanceCubit>(context)..removeCard(selection);
+  }
+
   void _doPayment(BuildContext context) {
     BlocProvider.of<BalanceCubit>(context)..execPayment();
+  }
+
+  void _addCard(BuildContext context) async {
+    var input = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => EnterCard()));
+    BlocProvider.of<BalanceCubit>(context)..addCard(input);
   }
 }

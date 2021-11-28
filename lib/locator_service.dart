@@ -7,8 +7,10 @@ import 'package:open_scooter_ui/feature/data/datasources/user_remote_data_source
 import 'package:open_scooter_ui/feature/data/repos/scooter_repo_impl.dart';
 import 'package:open_scooter_ui/feature/data/repos/user_repo_impl.dart';
 import 'package:open_scooter_ui/feature/domain/repos/scooter_repo.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/add_new_card.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/enter_auth_code.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/get_user_cached.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/remove_credit_card.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/save_user_cached.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/send_sms.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/top_up_balance.dart';
@@ -33,8 +35,12 @@ Future<void> init() async {
       () => UserCubit(sendSMS: sl(), enterAuthCode: sl(), getUserCached: sl()));
   //TODO:replace singleton with factory for scanner
   sl.registerSingleton<ScannerCubit>(ScannerCubit());
-  sl.registerFactory<BalanceCubit>(
-      () => BalanceCubit(getUser: sl(), topUp: sl(), saveUserCached: sl()));
+  sl.registerFactory<BalanceCubit>(() => BalanceCubit(
+      getUser: sl(),
+      topUp: sl(),
+      saveUserCached: sl(),
+      addNewCard: sl(),
+      removeCreditCard: sl()));
   // UseCases
   sl.registerLazySingleton(() => GetAllScooters(sl()));
   sl.registerLazySingleton(() => EnterAuthCode(sl()));
@@ -43,6 +49,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => TopUpBalance(sl()));
   sl.registerLazySingleton(() => GetUserCached(sl()));
   sl.registerLazySingleton(() => SaveUserCached(sl()));
+  sl.registerLazySingleton(() => AddNewCard(sl()));
+  sl.registerLazySingleton(() => RemoveCreditCard(sl()));
 
   // Repository
   sl.registerLazySingleton<ScooterRepo>(
