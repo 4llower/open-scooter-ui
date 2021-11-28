@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:open_scooter_ui/feature/domain/entities/scooter_entity.dart';
 
 abstract class ScooterState extends Equatable {
@@ -20,8 +21,9 @@ class ScooterLoading extends ScooterState {
 
 class ScooterLoaded extends ScooterState {
   final List<ScooterEntity> scooterList;
+  final Set<Marker> markers;
 
-  ScooterLoaded({required this.scooterList});
+  ScooterLoaded({required this.scooterList, required this.markers});
 
   @override
   List<Object> get props => [];

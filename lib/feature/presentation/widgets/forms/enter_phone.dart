@@ -22,10 +22,10 @@ class _EnterPhone extends State<EnterPhone> {
     return BlocBuilder<UserCubit, UserState>(builder: (context, state) {
       if (state is UserSendingSMS)
         return Container(
-            alignment: Alignment.center, child: CircularProgressIndicator());
+            alignment: Alignment.center, child: Center(child:CircularProgressIndicator()));
       if (state is UserLoading) {
         // _tryLoadUser(context);
-        return CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator());
       }
 
       return Container(

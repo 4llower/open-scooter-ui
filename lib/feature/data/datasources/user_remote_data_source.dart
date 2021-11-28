@@ -22,14 +22,14 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<UserModel> auth(String smsCode) {
     return Future.delayed(const Duration(seconds: 1), () {
       return UserModel.fromJson(jsonDecode(
-          '{"phone":"228","token":"token","location":{"lat":59,"lng":69},"balance":{"amount":99,"unit":"USD","cards":[{"id":"88005553535","type":"urmum"}]}}'));
+          '{"phone":"228","token":"token","location":{"lat":59.22,"lng":69.22},"balance":{"amount":99,"unit":"USD","cards":[{"id":"88005553535","type":"urmum"}]}}'));
     });
   }
 
   @override
   Future<UserModel> getUser(String token) async {
     const mock =
-        '{"token": {"phone": "228","token": "token","location": {"lat": 59,"lng": 69},"balance": {"amount": 99,"unit": "USD","cards": [{"id": "88005553535","type": "urmum"}]}},"327": {"phone": "327","token": "urmum","location": {"lat": 19,"lng": 19},"balance": {"amount": 10,"unit": "EUR","cards": [{"id": "297800255","type": "maestro"}]}}}';
+        '{"token": {"phone": "228","token": "token","location": {"lat": 59.22,"lng": 69.22},"balance": {"amount": 99,"unit": "USD","cards": [{"id": "88005553535","type": "urmum"}]}},"327": {"phone": "327","token": "urmum","location": {"lat": 19,"lng": 19},"balance": {"amount": 10,"unit": "EUR","cards": [{"id": "297800255","type": "maestro"}]}}}';
 
     var response = await Future.delayed(const Duration(seconds: 1), () => mock);
 
