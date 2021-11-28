@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:open_scooter_ui/core/error/exception.dart';
 import 'package:open_scooter_ui/core/error/failure.dart';
 import 'package:open_scooter_ui/core/status/ok.dart';
 import 'package:open_scooter_ui/feature/data/datasources/user_local_data_source.dart';
@@ -109,13 +109,17 @@ class UserLocalRepoImpl implements UserLocalRepo {
   @override
   Future<Either<Failure, UserEntity>> getUserCached() async {
     // await saveUserInCache(mockUser);
-    var cachedUser = await userLocalDataSource.getUserFromCache();
-    var user = UserEntity(
-        phone: cachedUser.phone,
-        location: cachedUser.location,
-        balance: cachedUser.balance,
-        token: cachedUser.token);
-    return Right(user);
+    try {
+      var cachedUser = await userLocalDataSource.getUserFromCache();
+      var user = UserEntity(
+          phone: cachedUser.phone,
+          location: cachedUser.location,
+          balance: cachedUser.balance,
+          token: cachedUser.token);
+      return Right(user);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
   }
 
   @override
@@ -126,5 +130,15 @@ class UserLocalRepoImpl implements UserLocalRepo {
         location: user.location,
         balance: user.balance));
     return Right(0);
+  }
+
+  @override
+  Future<Either<Failure, String>> getTokenCached() async {
+    try {
+      var token = await userLocalDataSource.getTokenFromCache();
+      return Right(token);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
   }
 }

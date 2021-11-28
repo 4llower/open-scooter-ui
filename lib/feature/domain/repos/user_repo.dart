@@ -18,4 +18,5 @@ abstract class UserRemoteRepo {
 abstract class UserLocalRepo {
   Future<Either<Failure, UserEntity>> getUserCached();
   Future<Either<Failure, void>> saveUserInCache(UserEntity user);
+  Future<Either<Failure, String>> getTokenCached();
 }

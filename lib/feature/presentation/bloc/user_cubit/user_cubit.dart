@@ -1,29 +1,45 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:open_scooter_ui/feature/domain/usecases/enter_auth_code.dart';
-import 'package:open_scooter_ui/feature/domain/usecases/get_user_cached.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/get_token_cached.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/get_user.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/save_user_cached.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/send_sms.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/user_cubit/user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
   final SendSMS sendSMS;
   final EnterAuthCode enterAuthCode;
-  final GetUserCached getUserCached;
+  final GetUser getUser;
+  final SaveUserCached saveUserCached;
+  final GetTokenCached getTokenCached;
   UserCubit(
       {required this.sendSMS,
       required this.enterAuthCode,
-      required this.getUserCached})
+      required this.getUser,
+      required this.getTokenCached,
+      required this.saveUserCached})
       : super(UserLoading());
 
   void tryLoadUser() async {
-    final failureOrUser = await getUserCached(GetUserCachedParams());
-
-    failureOrUser.fold(
-        (_) => emit(UserNotLogin()), (resp) => emit(UserLogin(user: resp)));
+    var token = await getTokenFromLocalStorage();
+    if (token.length > 0) {
+      final failureOrUser = await getUser(GetUserParams(token: token));
+      failureOrUser.fold(
+          (l) => throw UnimplementedError("[Failure] UserCubit getUser"),
+          (r) => {
+                saveUserCached(SaveUserCachedParams(user: r)),
+                emit(UserLogin(user: r))
+              });
+    } else {
+      emit(UserNotLogin());
+    }
   }
 
-  void getTokenFromLocalStorage() async {
-    print('init');
+  Future<String> getTokenFromLocalStorage() async {
+    final failureOrToken = await getTokenCached(GetTokenCachedParams());
+    String token = "";
+    failureOrToken.fold((l) => {token = ""}, (r) => {token = r});
+    return Future.value(token);
   }
 
   void updatePhone(String phone) async {
@@ -55,6 +71,9 @@ class UserCubit extends Cubit<UserState> {
     failureOrScooter.fold(
         (_) => throw UnimplementedError(
             '[Failure] Enter Auth Error catch not implemented'),
-        (user) => emit(UserLogin(user: user)));
+        (user) => {
+              saveUserCached(SaveUserCachedParams(user: user)),
+              emit(UserLogin(user: user))
+            });
   }
 }
