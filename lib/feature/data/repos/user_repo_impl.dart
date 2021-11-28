@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:open_scooter_ui/core/error/exception.dart';
 import 'package:open_scooter_ui/core/error/failure.dart';
 import 'package:open_scooter_ui/core/status/ok.dart';
 import 'package:open_scooter_ui/feature/data/datasources/user_local_data_source.dart';
@@ -30,10 +30,14 @@ class UserRemoteRepoImpl implements UserRemoteRepo {
   UserRemoteRepoImpl({required this.userRemoteDataSource});
 
   @override
-  Future<Either<Failure, UserEntity>> addCreditCard(
-      String cardNumber, String expirationDate, String cvc, String cardHolder) {
-    // TODO: implement addCreditCard
-    throw UnimplementedError();
+  Future<Either<Failure, UserEntity>> addCreditCard(String cardNumber,
+      String expirationDate, String cvc, String cardHolder) async {
+    var cardNum = mockUser.balance.cards.length;
+    mockUser.balance.cards.add(
+        CreditCardEntity(type: "nice card #${cardNum + 1}", id: cardNumber));
+    //TODO: delete waiting
+    await Future.delayed(const Duration(seconds: 1));
+    return Right(mockUser);
   }
 
   @override
@@ -42,9 +46,10 @@ class UserRemoteRepoImpl implements UserRemoteRepo {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> removeCreditCard(CreditCardEntity card) {
-    // TODO: implement removeCreditCard
-    throw UnimplementedError();
+  Future<Either<Failure, UserEntity>> removeCreditCard(
+      CreditCardEntity card) async {
+    mockUser.balance.cards.remove(card);
+    return Right(mockUser);
   }
 
   @override
@@ -75,8 +80,14 @@ class UserRemoteRepoImpl implements UserRemoteRepo {
       var user = await userRemoteDataSource.getUser(token);
       mockUser = UserEntity(
           phone: user.phone,
-          location: user.location,
-          balance: user.balance,
+          location:
+              LocationEntity(lat: user.location.lat, lng: user.location.lng),
+          balance: BalanceEntity(
+              amount: user.balance.amount,
+              cards: user.balance.cards
+                  .map((e) => CreditCardEntity(type: e.type, id: e.id))
+                  .toList(),
+              unit: user.balance.unit),
           token: user.token);
       mockUserToggle = false;
     }
@@ -103,14 +114,18 @@ class UserLocalRepoImpl implements UserLocalRepo {
 
   @override
   Future<Either<Failure, UserEntity>> getUserCached() async {
-    await saveUserInCache(mockUser);
-    var cachedUser = await userLocalDataSource.getUserFromCache();
-    var user = UserEntity(
-        phone: cachedUser.phone,
-        location: cachedUser.location,
-        balance: cachedUser.balance,
-        token: cachedUser.token);
-    return Right(user);
+    // await saveUserInCache(mockUser);
+    try {
+      var cachedUser = await userLocalDataSource.getUserFromCache();
+      var user = UserEntity(
+          phone: cachedUser.phone,
+          location: cachedUser.location,
+          balance: cachedUser.balance,
+          token: cachedUser.token);
+      return Right(user);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
   }
 
   @override
@@ -121,5 +136,15 @@ class UserLocalRepoImpl implements UserLocalRepo {
         location: user.location,
         balance: user.balance));
     return Right(0);
+  }
+
+  @override
+  Future<Either<Failure, String>> getTokenCached() async {
+    try {
+      var token = await userLocalDataSource.getTokenFromCache();
+      return Right(token);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
   }
 }

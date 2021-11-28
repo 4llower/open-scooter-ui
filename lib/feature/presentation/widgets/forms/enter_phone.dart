@@ -79,8 +79,4 @@ class _EnterPhone extends State<EnterPhone> {
   void _sendMessage(BuildContext context) {
     BlocProvider.of<UserCubit>(context).sendSMSCode();
   }
-
-  void _tryLoadUser(BuildContext context) async {
-    BlocProvider.of<UserCubit>(context).tryLoadUser();
-  }
 }

@@ -1,10 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_scooter_ui/core/error/failure.dart';
-import 'package:open_scooter_ui/feature/domain/entities/balance_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/credit_card_entity.dart';
 import 'package:open_scooter_ui/feature/domain/entities/user_entity.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/add_new_card.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/get_user_cached.dart';
+import 'package:open_scooter_ui/feature/domain/usecases/remove_credit_card.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/save_user_cached.dart';
 import 'package:open_scooter_ui/feature/domain/usecases/top_up_balance.dart';
 import 'package:open_scooter_ui/feature/presentation/bloc/balance_cubit/balance_state.dart';
@@ -13,14 +14,18 @@ class BalanceCubit extends Cubit<BalanceState> {
   final GetUserCached getUser;
   final TopUpBalance topUp;
   final SaveUserCached saveUserCached;
+  final AddNewCard addNewCard;
+  final RemoveCreditCard removeCreditCard;
   bool toggleTopUp = false;
-  int selectedPrice = 0;
-  int selectedMethod = 0;
+  int selectedPrice = -1;
+  int selectedMethod = -1;
   List<CreditCardEntity> cards = [];
   BalanceCubit(
       {required this.getUser,
       required this.topUp,
-      required this.saveUserCached})
+      required this.saveUserCached,
+      required this.addNewCard,
+      required this.removeCreditCard})
       : super(BalanceEmpty());
 
   void loadUser() async {
@@ -38,6 +43,9 @@ class BalanceCubit extends Cubit<BalanceState> {
               toggleTopUp
                   ? emit(BalanceTopUp(
                       user: resp,
+                      paymentReady: selectedMethod >= 0 && selectedPrice >= 0
+                          ? true
+                          : false,
                       selectedPrice: selectedPrice,
                       selectedMethod: selectedMethod))
                   : emit(BalanceLoaded(user: resp))
@@ -46,6 +54,8 @@ class BalanceCubit extends Cubit<BalanceState> {
 
   void topUpForm() async {
     toggleTopUp = !toggleTopUp;
+    selectedMethod = -1;
+    selectedPrice = -1;
     loadUser();
   }
 
@@ -63,7 +73,6 @@ class BalanceCubit extends Cubit<BalanceState> {
 
   void execPayment() async {
     if (state is BalanceLoading) return;
-
     emit(BalanceLoading());
     Either<Failure, UserEntity> failureOrPayment;
     var doPayment = (resp) async => {
@@ -84,5 +93,38 @@ class BalanceCubit extends Cubit<BalanceState> {
     failureOrUser.fold(
         (_) => throw UnimplementedError('[Failure] BalanceCubit getUserCached'),
         (resp) => doPayment(resp));
+    selectedMethod = -1;
+    selectedPrice = -1;
+  }
+
+  void addCard(Map<String, String> input) async {
+    var cardInfo = AddNewCardParams(
+        cardHolderName: input["CARD_HOLDER"],
+        cardNumber: input["CARD_NUMBER"],
+        cvvCode: input["CARD_CVV"],
+        expiryDate: input["CARD_EXPIRY_DATE"]);
+    emit(BalanceLoading());
+    final failureOrUser = await addNewCard(cardInfo);
+    failureOrUser.fold(
+        (l) => throw UnimplementedError('[Failure] BalanceCubit addNewCard'),
+        (r) => {
+              saveUserCached(SaveUserCachedParams(user: r)),
+              cards = r.balance.cards,
+              emit(BalanceLoaded(user: r))
+            });
+  }
+
+  void removeCard(int selectedCard) async {
+    emit(BalanceLoading());
+    final failureOrUser = await removeCreditCard(
+        RemoveCreditCardParams(creditCard: cards[selectedCard]));
+    failureOrUser.fold(
+        (l) =>
+            throw UnimplementedError('[Failure] BalanceCubit removeCreditCard'),
+        (r) => {
+              saveUserCached(SaveUserCachedParams(user: r)),
+              cards = r.balance.cards,
+              emit(BalanceLoaded(user: r))
+            });
   }
 }
