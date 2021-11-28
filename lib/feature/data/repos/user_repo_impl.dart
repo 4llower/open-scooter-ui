@@ -80,8 +80,14 @@ class UserRemoteRepoImpl implements UserRemoteRepo {
       var user = await userRemoteDataSource.getUser(token);
       mockUser = UserEntity(
           phone: user.phone,
-          location: user.location,
-          balance: user.balance,
+          location:
+              LocationEntity(lat: user.location.lat, lng: user.location.lng),
+          balance: BalanceEntity(
+              amount: user.balance.amount,
+              cards: user.balance.cards
+                  .map((e) => CreditCardEntity(type: e.type, id: e.id))
+                  .toList(),
+              unit: user.balance.unit),
           token: user.token);
       mockUserToggle = false;
     }

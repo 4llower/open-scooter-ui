@@ -17,8 +17,8 @@ class BalanceCubit extends Cubit<BalanceState> {
   final AddNewCard addNewCard;
   final RemoveCreditCard removeCreditCard;
   bool toggleTopUp = false;
-  int selectedPrice = 0;
-  int selectedMethod = 0;
+  int selectedPrice = -1;
+  int selectedMethod = -1;
   List<CreditCardEntity> cards = [];
   BalanceCubit(
       {required this.getUser,
@@ -43,6 +43,9 @@ class BalanceCubit extends Cubit<BalanceState> {
               toggleTopUp
                   ? emit(BalanceTopUp(
                       user: resp,
+                      paymentReady: selectedMethod >= 0 && selectedPrice >= 0
+                          ? true
+                          : false,
                       selectedPrice: selectedPrice,
                       selectedMethod: selectedMethod))
                   : emit(BalanceLoaded(user: resp))
@@ -51,6 +54,8 @@ class BalanceCubit extends Cubit<BalanceState> {
 
   void topUpForm() async {
     toggleTopUp = !toggleTopUp;
+    selectedMethod = -1;
+    selectedPrice = -1;
     loadUser();
   }
 
@@ -68,7 +73,6 @@ class BalanceCubit extends Cubit<BalanceState> {
 
   void execPayment() async {
     if (state is BalanceLoading) return;
-
     emit(BalanceLoading());
     Either<Failure, UserEntity> failureOrPayment;
     var doPayment = (resp) async => {
@@ -89,6 +93,8 @@ class BalanceCubit extends Cubit<BalanceState> {
     failureOrUser.fold(
         (_) => throw UnimplementedError('[Failure] BalanceCubit getUserCached'),
         (resp) => doPayment(resp));
+    selectedMethod = -1;
+    selectedPrice = -1;
   }
 
   void addCard(Map<String, String> input) async {

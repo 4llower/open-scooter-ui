@@ -30,11 +30,13 @@ class BalanceLoaded extends BalanceState {
 class BalanceTopUp extends BalanceLoaded {
   final int selectedPrice;
   final int selectedMethod;
+  final bool paymentReady;
   static List<int> paymentPrices = [5, 10, 20];
   BalanceTopUp(
       {required user,
       required this.selectedPrice,
-      required this.selectedMethod})
+      required this.selectedMethod,
+      required this.paymentReady})
       : super(user: user);
   List<int> getPaymentPrices() {
     return BalanceTopUp.paymentPrices;

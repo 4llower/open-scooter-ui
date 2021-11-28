@@ -58,7 +58,9 @@ class BalanceWidget extends StatelessWidget {
                             maxWidth: 350),
                         child: ElevatedButton(
                           child: Text("Pay"),
-                          onPressed: () => _doPayment(context),
+                          onPressed: state.paymentReady
+                              ? () => _doPayment(context)
+                              : null,
                         )))));
           }
           return Column(
@@ -211,7 +213,7 @@ class BalanceWidget extends StatelessWidget {
           );
         }
         if (state is BalanceLoading) {
-          return Center(child: CircularProgressIndicator());
+          return Container(child: Center(child: CircularProgressIndicator()));
         }
 
         return Text("Balance error");
@@ -282,6 +284,24 @@ class BalanceWidget extends StatelessWidget {
   }
 
   void _toogleTopUp(BuildContext context) {
+    if (BlocProvider.of<BalanceCubit>(context).cards.length == 0) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          //TODO: add alert dialog message from config
+          title: const Text('Top-up'),
+          content: const Text(
+              'You don\'t have payment methods to top-up your balance. Add at least one credit card and try again.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
     BlocProvider.of<BalanceCubit>(context)..topUpForm();
   }
 
